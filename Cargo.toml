@@ -1,0 +1,10 @@
+[package]
+edition = "2021"
+name = "ogl"
+version = "0.1.0"
+
+[dependencies]
+anyhow = "1.0.95"
+gl = "0.14.0"
+glfw = { version = "*" }
+libc = "0.2.169"
