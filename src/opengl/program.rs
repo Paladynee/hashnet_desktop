@@ -1,15 +1,11 @@
-#![allow(unused)]
-use gl::types::{GLchar, GLenum, GLint};
+use anyhow::Result;
+use gl::types::{GLchar, GLint};
 
-use crate::shader::Shader;
+use crate::opengl::shader::Shader;
 
+use std::ffi::CStr;
 use std::fmt::{self, Display};
 use std::ptr;
-
-#[derive(Debug)]
-pub struct Program {
-    handle: u32,
-}
 
 #[derive(Debug)]
 #[non_exhaustive]
@@ -31,22 +27,24 @@ impl Display for ProgramError {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct Program {
+    handle: u32,
+}
+
 impl Program {
-    #[inline]
     pub fn new_empty() -> Self {
         Self {
             handle: unsafe { gl::CreateProgram() },
         }
     }
 
-    #[inline]
     pub fn attach_shader(&self, shader: &Shader) {
         unsafe {
             gl::AttachShader(self.handle, shader.handle());
         }
     }
 
-    #[inline]
     pub fn link(&self) -> Result<(), ProgramError> {
         unsafe {
             gl::LinkProgram(self.handle);
@@ -77,7 +75,10 @@ impl Program {
         Ok(())
     }
 
-    #[inline]
+    pub fn handle(&self) -> u32 {
+        self.handle
+    }
+
     pub fn try_from_shaders(shaders: &[&Shader]) -> Result<Program, ProgramError> {
         let prog = Program::new_empty();
 
@@ -90,11 +91,14 @@ impl Program {
         Ok(prog)
     }
 
-    #[inline]
     pub fn use_program(&self) {
         unsafe {
             gl::UseProgram(self.handle);
         }
+    }
+
+    pub fn get_uniform_location(&self, name: &CStr) -> i32 {
+        unsafe { gl::GetUniformLocation(self.handle(), name.as_ptr()) }
     }
 }
 
