@@ -3,9 +3,10 @@ use gl::types::{GLchar, GLint};
 
 use crate::opengl::shader::Shader;
 
-use std::ffi::CStr;
-use std::fmt::{self, Display};
-use std::ptr;
+use core::error::Error;
+use core::ffi::CStr;
+use core::fmt::{self, Display};
+use core::ptr;
 
 #[derive(Debug)]
 #[non_exhaustive]
@@ -15,14 +16,14 @@ pub enum ProgramError {
     ErrorHandlerError(&'static str),
 }
 
-impl core::error::Error for ProgramError {}
+impl Error for ProgramError {}
 
 impl Display for ProgramError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
-            ProgramError::LinkError(ref log) => write!(f, "Link error: {}", log),
-            ProgramError::EmptyLog => write!(f, "Empty error log"),
-            ProgramError::ErrorHandlerError(s) => write!(f, "Program error handler error: {}", s),
+            Self::LinkError(ref log) => write!(f, "Link error: {}", log),
+            Self::EmptyLog => write!(f, "Empty error log"),
+            Self::ErrorHandlerError(s) => write!(f, "Program error handler error: {}", s),
         }
     }
 }
@@ -75,12 +76,12 @@ impl Program {
         Ok(())
     }
 
-    pub fn handle(&self) -> u32 {
+    pub const fn handle(&self) -> u32 {
         self.handle
     }
 
-    pub fn try_from_shaders(shaders: &[&Shader]) -> Result<Program, ProgramError> {
-        let prog = Program::new_empty();
+    pub fn try_from_shaders(shaders: &[&Shader]) -> Result<Self, ProgramError> {
+        let prog = Self::new_empty();
 
         for shader in shaders {
             prog.attach_shader(shader);

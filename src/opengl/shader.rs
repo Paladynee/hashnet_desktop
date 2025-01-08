@@ -2,14 +2,15 @@ use anyhow::Result;
 use gl::types::{GLchar, GLenum, GLint};
 
 use crate::include_cstr;
-use std::ffi::CStr;
-use std::fmt::{self, Display};
-use std::ptr;
+use core::error::Error;
+use core::ffi::CStr;
+use core::fmt::{self, Display};
+use core::ptr;
 
-pub const V_SOURCE: &CStr = include_cstr!("./shaders/vertex.glsl");
-pub const F_SOURCE: &CStr = include_cstr!("./shaders/frag.glsl");
-pub const G_SOURCE: &CStr = include_cstr!("./shaders/geometry.glsl");
-pub const C_SOURCE: &CStr = include_cstr!("./shaders/compute.glsl");
+pub const V_SOURCE: &CStr = include_cstr!("./shader_source/vertex.glsl");
+pub const F_SOURCE: &CStr = include_cstr!("./shader_source/frag.glsl");
+pub const G_SOURCE: &CStr = include_cstr!("./shader_source/geometry.glsl");
+pub const C_SOURCE: &CStr = include_cstr!("./shader_source/compute.glsl");
 
 #[derive(Debug)]
 #[non_exhaustive]
@@ -19,7 +20,7 @@ pub enum ShaderCompileError {
     ErrorHandlerError(GLenum),
 }
 
-impl core::error::Error for ShaderCompileError {}
+impl Error for ShaderCompileError {}
 
 impl Display for ShaderCompileError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -48,7 +49,7 @@ pub struct Shader {
 }
 
 impl Shader {
-    pub fn try_from_source(source: &CStr, shader_type: GLenum) -> Result<Shader, ShaderCompileError> {
+    pub fn try_from_source(source: &CStr, shader_type: GLenum) -> Result<Self, ShaderCompileError> {
         unsafe {
             let shader = gl::CreateShader(shader_type);
             gl::ShaderSource(shader, 1, &source.as_ptr(), ptr::null());
@@ -81,11 +82,11 @@ impl Shader {
         }
     }
 
-    pub fn handle(&self) -> u32 {
+    pub const fn handle(&self) -> u32 {
         self.handle
     }
 
-    pub fn ty(&self) -> GLenum {
+    pub const fn ty(&self) -> GLenum {
         self.ty
     }
 }

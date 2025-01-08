@@ -1,4 +1,7 @@
-use std::{ffi::c_void, mem, ptr, time::Instant};
+use core::ffi::c_void;
+use core::mem;
+use core::ptr;
+use std::time::Instant;
 
 use voxell_rng::{getrandom::MagicSeed, rng::XorShift128};
 
@@ -23,7 +26,7 @@ pub struct RenderState<const OBJECTS_AMT: usize> {
 }
 
 impl<const LEN: usize> RenderState<LEN> {
-    pub fn new(can_w: usize, can_h: usize, draw_program: &Program, compute_program: &Program) -> Self {
+    pub fn new(can_w: usize, can_h: usize, draw_program: &Program, _compute_program: &Program) -> Self {
         let seed = [
             MagicSeed::u64().expect("fix your OS, couldn't get OS entropy"),
             MagicSeed::u64().expect("fix your OS, couldn't get OS entropy"),
@@ -52,6 +55,7 @@ impl<const LEN: usize> RenderState<LEN> {
             last_update: Instant::now(),
         }
     }
+
     pub const fn count(&self) -> usize {
         LEN
     }
@@ -89,8 +93,8 @@ pub fn initialize_buffers<const LEN: usize>(draw_program: &Program, data: &Rende
             gl::ARRAY_BUFFER,
             mem::size_of_val(data.data().as_slice()) as isize,
             data.data().as_ptr().cast::<c_void>(),
-            gl::DYNAMIC_DRAW,
-        )
+            gl::STATIC_DRAW,
+        );
     }
 }
 

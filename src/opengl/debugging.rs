@@ -1,4 +1,4 @@
-use std::{
+use core::{
     ffi::{c_void, CStr},
     ptr,
 };
@@ -74,7 +74,6 @@ extern "system" fn gl_debug_callback(source: u32, gltype: u32, id: u32, severity
         }
     }
 }
-
 
 pub fn gl_initialize_debugging() {
     unsafe {

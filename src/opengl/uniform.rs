@@ -27,19 +27,19 @@ impl UniformLocations {
         })
     }
 
-    pub fn get_time_handle(&self) -> i32 {
+    pub const fn get_time_handle(&self) -> i32 {
         self.time
     }
 
-    pub fn get_dt_handle(&self) -> i32 {
+    pub const fn get_dt_handle(&self) -> i32 {
         self.dt
     }
 
-    pub fn get_quad_size_handle(&self) -> i32 {
+    pub const fn get_quad_size_handle(&self) -> i32 {
         self.quad_size
     }
 
-    pub fn get_mouse_pos_handle(&self) -> i32 {
+    pub const fn get_mouse_pos_handle(&self) -> i32 {
         self.mouse_pos
     }
 

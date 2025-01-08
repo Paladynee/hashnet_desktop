@@ -34,7 +34,7 @@ impl<const LEN: usize> RenderData<LEN> {
     }
 
     
-    pub fn data(&self) -> &BoxedArray<LEN, Particle> {
+    pub const fn data(&self) -> &BoxedArray<LEN, Particle> {
         &self.data
     }
 

@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 extern crate anyhow;
 extern crate gl;
 extern crate glfw;
@@ -13,7 +14,8 @@ pub mod vec2;
 
 fn main() -> Result<()> {
     let mut global_state: GlobalState<128> = GlobalState::new()?;
-    global_state.main_loop()?;
+    // Safety: we just initialized global_state, triplet can't be None.
+    unsafe { global_state.main_loop() };
 
     Ok(())
 }

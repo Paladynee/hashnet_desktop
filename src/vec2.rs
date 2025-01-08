@@ -8,47 +8,40 @@ pub struct Vector2 {
 }
 
 impl Vector2 {
-    
-    pub const fn new(x: Vector2Inner, y: Vector2Inner) -> Vector2 {
-        Vector2 { x, y }
+    pub const fn new(x: Vector2Inner, y: Vector2Inner) -> Self {
+        Self { x, y }
     }
 
-    
-    pub const fn set_vec(&mut self, other: &Vector2) {
+    pub const fn set_vec(&mut self, other: &Self) {
         self.x = other.x;
         self.y = other.y;
     }
 
-    
     pub const fn set(&mut self, x: Vector2Inner, y: Vector2Inner) {
         self.x = x;
         self.y = y;
     }
 
-    
-    pub const fn add_vec(&mut self, other: &Vector2) {
+    pub const fn add_vec(&mut self, other: &Self) {
         self.x += other.x;
         self.y += other.y;
     }
 
-    
     pub const fn add(&mut self, x: Vector2Inner, y: Vector2Inner) {
         self.x += x;
         self.y += y;
     }
-    
+
     pub const fn scale(&mut self, factor: Vector2Inner) {
         self.x *= factor;
         self.y *= factor;
     }
 
-    
-    pub const fn scale_vec(&mut self, other: &Vector2) {
+    pub const fn scale_vec(&mut self, other: &Self) {
         self.x *= other.x;
         self.y *= other.y;
     }
 
-    
     pub fn normalize(&mut self) {
         let hypot = self.mag();
         if hypot == 0.0 {
@@ -60,43 +53,36 @@ impl Vector2 {
         self.y /= hypot;
     }
 
-    
     pub const fn mag_sq(&self) -> Vector2Inner {
         self.x * self.x + self.y * self.y
     }
 
-    
     pub fn mag(&self) -> Vector2Inner {
         self.mag_sq().sqrt()
     }
 
-    
     pub fn square(&mut self) {
         let mag = self.mag();
         self.normalize();
         self.scale(mag);
     }
 
-    
-    pub const fn to(&mut self, other: &Vector2) {
+    pub const fn to(&mut self, other: &Self) {
         self.x = other.x - self.x;
         self.y = other.y - self.y;
     }
 
-    
-    pub const fn from(&mut self, other: &Vector2) {
+    pub const fn from(&mut self, other: &Self) {
         self.x -= other.x;
         self.y -= other.y;
     }
 
-    
     pub const fn neg(&mut self) {
         self.x = -self.x;
         self.y = -self.y;
     }
 
-    
-    pub fn one_over_d_sq(&mut self, consume_target: &Vector2, unit_size: &Vector2) {
+    pub fn one_over_d_sq(&mut self, consume_target: &Self, unit_size: &Self) {
         // self.scale_vec(unit_size);
         // let mut tmp = consume_target;
         // tmp.scale_vec(unit_size);
@@ -110,8 +96,7 @@ impl Vector2 {
         self.scale(mag);
     }
 
-    
-    pub fn divide(&self, amount: Vector2Inner) -> Vec<Vector2> {
+    pub fn divide(&self, amount: Vector2Inner) -> Vec<Self> {
         let mut vec_tuple_array = Vec::new();
         let mut unit = self.clone();
         unit.normalize();
@@ -132,19 +117,17 @@ impl Vector2 {
         vec_tuple_array
     }
 
-    
     pub fn rotate(&mut self, angle: Vector2Inner) {
         let cos = angle.cos();
         let sin = angle.sin();
 
-        let new_x = self.x * cos - self.y * sin;
-        let new_y = self.x * sin + self.y * cos;
+        let new_x = self.x.mul_add(cos, -(self.y * sin));
+        let new_y = self.x.mul_add(sin, self.y * cos);
 
         self.x = new_x;
         self.y = new_y;
     }
 
-    
     pub const fn arr(&self) -> [Vector2Inner; 2] {
         [self.x, self.y]
     }

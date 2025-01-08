@@ -1,7 +1,5 @@
-use std::{
-    ptr,
-    time::{Duration, Instant},
-};
+use core::{ptr, time::Duration};
+use std::time::Instant;
 
 use crate::opengl::uniform::SetAllUniformLocations;
 use anyhow::{Context as AnyhowContextTrait, Result};
@@ -64,8 +62,11 @@ impl<const LEN: usize> GlobalState<LEN> {
         [self.draw_uniforms.clone(), self.compute_uniforms.clone()]
     }
 
-    pub fn main_loop(&mut self) -> Result<()> {
-        main_loop(self)
+    /// # Safety
+    ///
+    /// gs.triplet must be Some
+    pub unsafe fn main_loop(&mut self) {
+        unsafe { main_loop(self) }
     }
 }
 
@@ -77,15 +78,16 @@ pub fn initialize_opengl() {
     gl_initialize_debugging();
 }
 
-fn main_loop<const LEN: usize>(gs: &mut GlobalState<LEN>) -> Result<()> {
-    let Some(GLFWTriplet {
+/// # Safety
+///
+/// gs.triplet must be Some
+unsafe fn main_loop<const LEN: usize>(gs: &mut GlobalState<LEN>) {
+    debug_assert!(gs.triplet.is_some());
+    let GLFWTriplet {
         mut glfw,
         mut window,
         events,
-    }) = gs.triplet.take()
-    else {
-        return Err(anyhow::anyhow!("GLFWTriplet is None"));
-    };
+    } = unsafe { gs.triplet.take().unwrap_unchecked() };
 
     let mut fps_counter = 0;
     let mut fps_counter_last_printed = Instant::now();
@@ -129,8 +131,6 @@ fn main_loop<const LEN: usize>(gs: &mut GlobalState<LEN>) -> Result<()> {
     }
 
     gs.triplet = Some(GLFWTriplet { glfw, window, events });
-
-    Ok(())
 }
 
 fn init_glfw() -> Result<GLFWTriplet> {
