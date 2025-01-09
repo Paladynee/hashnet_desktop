@@ -82,7 +82,7 @@ pub fn initialize_opengl() {
 ///
 /// gs.triplet must be Some
 unsafe fn main_loop<const LEN: usize>(gs: &mut GlobalState<LEN>) {
-    debug_assert!(gs.triplet.is_some());
+    debug_assert!(gs.triplet.is_some(), "UNDEFINED BEHAVIOR: triplet must be Some");
     let GLFWTriplet {
         mut glfw,
         mut window,

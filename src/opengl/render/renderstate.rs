@@ -95,6 +95,9 @@ pub fn initialize_buffers<const LEN: usize>(draw_program: &Program, data: &Rende
             data.data().as_ptr().cast::<c_void>(),
             gl::STATIC_DRAW,
         );
+
+        gl::BindBuffer(gl::ARRAY_BUFFER, 0);
+        gl::BindVertexArray(0);
     }
 }
 

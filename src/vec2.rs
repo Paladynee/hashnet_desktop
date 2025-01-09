@@ -1,4 +1,4 @@
-type Vector2Inner = f32; // can switch between f32/f64
+type Vector2Inner = f32;
 
 #[derive(Clone, Debug, Default)]
 #[repr(C)]
